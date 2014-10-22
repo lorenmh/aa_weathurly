@@ -10,11 +10,11 @@
 <style>
   @font-face {
     font-family: 'MeteoconsRegular';
-    src: url('static/fonts/meteocons-webfont.eot');
-    src: url('static/fonts/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
-         url('static/fonts/meteocons-webfont.woff') format('woff'),
-         url('static/fonts/meteocons-webfont.ttf') format('truetype'),
-         url('static/fonts/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+    src: url('static/lib/fonts/meteocons-webfont.eot');
+    src: url('static/lib/fonts/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
+         url('static/lib/fonts/meteocons-webfont.woff') format('woff'),
+         url('static/lib/fonts/meteocons-webfont.ttf') format('truetype'),
+         url('static/lib/fonts/meteocons-webfont.svg#MeteoconsRegular') format('svg');
     font-weight: normal;
     font-style: normal;
   }
@@ -53,22 +53,30 @@
     padding: 20 0;
     font-size: 24px;
     margin: 0;
-    border-bottom: 5px solid rgba(122,122,122,.4);
+    border-top: 5px solid rgb(200,200,200);
+    border-bottom: 1px solid rgb(200,200,200);
   }
 
   .top {
-    background-color: rgb(122, 122, 153);
+    background-color: rgb(52, 52, 65);
     border-bottom: 5px solid rgb(200,200,200);
     padding-top: 20px;
+    min-height: 300px;
   }
 
   .location {
     text-align: center;
     font-size: 50px;
-    margin: 0;
+    margin: 10px 0 0 0;
+    color: rgb(230,230,230);
+  }
+
+  .location.index {
+    margin-bottom:40px;
   }
 
   .input-toggle {
+    color: black;
     width: 100px;
     height: 20px;
     text-align: center;
@@ -77,7 +85,8 @@
   }
 
   .current-reading-wrap {
-    
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+    color: rgb(210,210,210);
   }
 
   .current-reading-wrap .reading {
@@ -99,15 +108,17 @@
   }
 
   .current-reading-wrap .reading-temp {
+    color: rgb(200,100,100);
     font-size: 45px;
     margin-right: -12px;
+    margin-top:10px
+    padding-top: 0;
   }
 
   .current-reading-wrap .reading-image {
-    width: 150px;
-    height: 150px;
+    height: 120px;
     font-size: 120px;
-    line-height: 150px;
+    line-height: 120px;
   }
 
   .current-reading-wrap .reading-description {
@@ -174,8 +185,8 @@
     height: 36px;
     outline: none;
     background: none;
-    background-color: rgb(97, 218, 167);
-    border:1px solid rgb(100,100,100);
+    background-color: rgb(200,100,100);
+    border:1px solid rgba(0,0,0,.2);
     border-left: none;
     position: absolute;
     right: 0;
@@ -183,7 +194,7 @@
     cursor: pointer;
     font-weight: 700;
     font-size: 14px;
-    color: rgba(0,0,0,.65);
+    color: rgba(0,0,0,.8);
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
   }
@@ -192,7 +203,7 @@
     padding: 8px 90px 8px 10px;
     font-size: 16px;
     width: 100%;
-    border:1px solid rgb(100,100,100);
+    border: 1px solid rgba(0,0,0,.2);
     border-right: none;
     border-radius: 3px;
   }
@@ -210,6 +221,54 @@
   .readings-wrap {
     max-width: 1200px;
     margin: auto;
+    margin-top: -5px;
+  }
+
+  .sms-wrap {
+    padding: 20px;
+    background-color: rgb(52, 52, 65);
+    border-top: 5px solid rgb(200,200,200);
+  }
+
+  .sms-title {
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    margin-top:0;
+    color: rgb(230,230,230);
+  }
+
+  #weatherapp {
+    background-color: rgb(240,240,240);
+    color: rgb(30,30,30);
+  }
+
+  .info-left, .info-right {
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
+  }
+
+  .current-reading {
+    max-width: 300px;
+    margin: auto;
+  }
+
+  .app-name {
+    color: rgb(200,100,100);
+    text-align: center;
+    margin: 0;
+  }
+
+  @media all and (max-width:1000px) {
+    .reading {
+      width: 25%;
+    }
+  }
+
+  @media all and (max-width:420px) {
+    .reading {
+      width: 50%;
+    }
   }
 
 </style>
@@ -222,14 +281,23 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="index">
-  <h2>Enter your location</h2>
-  {{ partial 'forecast_input' }}
-  </div>
+  <section id="weatherapp">
+    <div class="top">
+      <h1 class="app-name">weathur.ly</h1>
+      <h1 class="location index">Enter your location</h1>
+      {{ partial 'forecast_input' }}
+      
+      <div class="current-reading-wrap">
+      </div>
+    </div>
+    <div class="readings-wrap"></div>
+  </section>
 </script>
 
 <script type="text/x-handlebars" data-template-name="forecast">
   <section id="weatherapp">
     <div class="top">
+      <h1 class="app-name">weathur.ly</h1>
       <h1 class="location">{{ location }}</h1>
       
       {{#if inputDisplay}}
@@ -239,13 +307,31 @@
         <a class="input-toggle" {{ action 'showInput'}}>not here?</a>
       {{/if}}
       <div class="current-reading-wrap">
-      {{render '_reading' currentReading}}
+      {{render '_current-reading' currentReading}}
       </div>
     </div>
     <div class="readings-wrap">
     {{#each readings}}{{ partial 'reading' }}{{/each}}
     </div>
+    <div class="sms-wrap">
+      <h2 class="sms-title">Register for SMS alerts for this location</h2>
+      {{ partial 'sms-input' }}
+    </div>
   </section>
+</script>
+
+<script type="text/x-handlebars" data-template-name="_current-reading">
+<div class="current-reading">
+  <h2 class="reading-temp">{{ temp }}</h2>
+  <div class="info-wrap">
+    <div {{ bind-attr class=":info-left :reading-image sky" }}><!--inline-->
+    </div><div class="info-right">
+      <p class="reading-description">{{ sky_desc }}</p>
+      <p class="reading-humidity">Humidity {{ humid }}%</p>
+      <p class="reading-wind">Wind {{ wind_spd }} {{ wind_dir }}</p>
+    </div>
+  </div>
+</div>
 </script>
 
 <script type="text/x-handlebars" data-template-name="_reading"><div class="reading">
@@ -260,6 +346,13 @@
 <script type="text/x-handlebars" data-template-name="_forecast_input">
   <div class="input-wrap">
     {{ input class="user-input" type="text" action="routeTo" valueBinding="newForecastValue"}}
+    <button class="user-input-button" {{ action "routeTo" }}>submit</button>
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="_sms-input">
+  <div class="input-wrap">
+    {{ input class="user-input" type="text" }}
     <button class="user-input-button" {{ action "routeTo" }}>submit</button>
   </div>
 </script>
