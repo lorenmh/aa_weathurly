@@ -238,8 +238,12 @@
   }
 
   #weatherapp {
-    background-color: rgb(240,240,240);
+    background-color: rgb(52, 52, 65);
     color: rgb(30,30,30);
+  }
+
+  .readings-section {
+    background-color: rgb(230,230,230);
   }
 
   .info-left, .info-right {
@@ -310,8 +314,10 @@
       {{render '_current-reading' currentReading}}
       </div>
     </div>
-    <div class="readings-wrap">
-    {{#each readings}}{{ partial 'reading' }}{{/each}}
+    <div class="readings-section">
+      <div class="readings-wrap">
+        {{#each readings}}{{ partial 'reading' }}{{/each}}
+      </div>
     </div>
     <div class="sms-wrap">
       <h2 class="sms-title">Register for SMS alerts for this location</h2>

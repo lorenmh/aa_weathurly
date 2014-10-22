@@ -147,7 +147,9 @@ Weather.OWMAdapter = Ember.Object.extend({
     return this.host + this.cityKey + city;
   },
   coordUrl: function(coord) {
-    return this.host + this.latKey + coord.lat + this.lonKey + coord.lon;
+    var lat = coord.coords.latitude;
+    var lon = coord.coords.longitude;
+    return this.host + this.latKey + lat + this.lonKey + lon;
   },
   APIPromise: function(url) {
     return new Promise(function(resolve, reject) {
@@ -169,6 +171,7 @@ Weather.OWMAdapter = Ember.Object.extend({
     });
   },
   findFromCoord: function(coord) {
+    console.log(coord);
     return Ember.$.getJSON( this.coordUrl(coord) ).then(function(data) {
       // create a new Weather.Forecast object from the serialized data
       return forecastModelFromObj(Weather.ForecastSerializer.serialize(data));
@@ -218,8 +221,8 @@ Weather.IndexRoute = Ember.Route.extend({
     if (Weather.LocalStorage.locationExists()) {
       this.transitionTo('forecast', Weather.LocalStorage.getLocation());
     } else {
-      Weather.Geolocation.coordinates().then( function() {
-        ctx.forecastAdapter.findFromCoord().then( function(mdl) {
+      Weather.Geolocation.coordinates().then( function(gl) {
+        ctx.forecastAdapter.findFromCoord(gl).then( function(mdl) {
           ctx.transitionTo('forecast', mdl);
         });
       });
