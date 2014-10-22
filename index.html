@@ -1,0 +1,269 @@
+<html>
+<head>
+  <script type="text/javascript" src="static/lib/js/jquery.min.js"></script>
+  <script type="text/javascript" src="static/lib/js/handlebars.min.js"></script>
+  <script type="text/javascript" src="static/lib/js/ember.min.js"></script>
+  <script type="text/javascript" src="static/lib/js/ember-data.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+<style>
+  @font-face {
+    font-family: 'MeteoconsRegular';
+    src: url('static/fonts/meteocons-webfont.eot');
+    src: url('static/fonts/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
+         url('static/fonts/meteocons-webfont.woff') format('woff'),
+         url('static/fonts/meteocons-webfont.ttf') format('truetype'),
+         url('static/fonts/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Helvetica, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+  }
+  a {
+    cursor: pointer;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .reading {
+    width: 12.5%;
+    display: inline-block;
+    padding-bottom: 20px;
+  }
+
+  .reading-temp, .reading-hour {
+    font-weight: 300;
+  }
+
+  .reading-hour {
+    text-align: center;
+    padding: 20 0;
+    font-size: 24px;
+    margin: 0;
+    border-bottom: 5px solid rgba(122,122,122,.4);
+  }
+
+  .top {
+    background-color: rgb(122, 122, 153);
+    border-bottom: 5px solid rgb(200,200,200);
+    padding-top: 20px;
+  }
+
+  .location {
+    text-align: center;
+    font-size: 50px;
+    margin: 0;
+  }
+
+  .input-toggle {
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    display: block;
+    margin: auto;
+  }
+
+  .current-reading-wrap {
+    
+  }
+
+  .current-reading-wrap .reading {
+    display: block;
+    margin:auto;
+    width: 100%;
+  }
+
+  .current-reading-wrap .reading-hour {
+    display: none;
+  }
+
+  .reading-temp {
+    padding-top: 20px;
+    font-size: 30px;
+    text-align: center;
+    margin: 0;
+    margin-right: -8px;
+  }
+
+  .current-reading-wrap .reading-temp {
+    font-size: 45px;
+    margin-right: -12px;
+  }
+
+  .current-reading-wrap .reading-image {
+    width: 150px;
+    height: 150px;
+    font-size: 120px;
+    line-height: 150px;
+  }
+
+  .current-reading-wrap .reading-description {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .current-reading-wrap .reading-humidity, .current-reading-wrap .reading-wind {
+    font-size:16px;
+  }
+
+  .reading-image {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    font-size: 80px;
+    text-align:center;
+    line-height: 100px;
+  }
+
+  .reading-image.clear:before {
+    font-family: 'MeteoconsRegular';
+    content: '1';
+    /*background-image: url('clear.svg');*/
+  }
+
+  .reading-image.rain:before {
+    /*background-image: url('rain.svg');*/
+    font-family: 'MeteoconsRegular';
+    content: '8';
+  }
+
+  .reading-image.clouds:before {
+    /*background-image: url('clouds.svg');*/
+    font-family: 'MeteoconsRegular';
+    content: '5';
+  }
+  .reading-description {
+    text-align: center;
+    margin-top: 0;
+  }
+  
+  .reading-humidity, .reading-wind {
+    font-size:12px;
+    margin: 0;
+  }
+
+  .reading-humidity {
+    text-align: center;
+  }
+
+  .reading-wind {
+    text-align: center;
+  }
+
+  .input-wrap {
+    margin:auto;
+    width: 300px;
+    position: relative;
+  }
+
+  .user-input-button {
+    width: 80px;
+    height: 36px;
+    outline: none;
+    background: none;
+    background-color: rgb(97, 218, 167);
+    border:1px solid rgb(100,100,100);
+    border-left: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(0,0,0,.65);
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
+  .user-input {
+    padding: 8px 90px 8px 10px;
+    font-size: 16px;
+    width: 100%;
+    border:1px solid rgb(100,100,100);
+    border-right: none;
+    border-radius: 3px;
+  }
+
+  .user-input:active {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .user-input:focus {
+    outline: none;
+    box-shadow: rgba(0,0,0,.4) 0px 1px 3px;
+  }
+
+  .readings-wrap {
+    max-width: 1200px;
+    margin: auto;
+  }
+
+</style>
+
+</head>
+<body>
+
+<script type="text/x-handlebars">
+  {{outlet}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="index">
+  <h2>Enter your location</h2>
+  {{ partial 'forecast_input' }}
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="forecast">
+  <section id="weatherapp">
+    <div class="top">
+      <h1 class="location">{{ location }}</h1>
+      
+      {{#if inputDisplay}}
+        <a class="input-toggle" {{ action 'hideInput'}}>hide</a>
+        {{ partial 'forecast_input' }}
+      {{else}}
+        <a class="input-toggle" {{ action 'showInput'}}>not here?</a>
+      {{/if}}
+      <div class="current-reading-wrap">
+      {{render '_reading' currentReading}}
+      </div>
+    </div>
+    <div class="readings-wrap">
+    {{#each readings}}{{ partial 'reading' }}{{/each}}
+    </div>
+  </section>
+</script>
+
+<script type="text/x-handlebars" data-template-name="_reading"><div class="reading">
+    <h2 class="reading-hour">{{ hour }}</h2>
+    <h2 class="reading-temp">{{ temp }}</h2>
+    <div {{ bind-attr class=":reading-image sky" }}></div>
+    <p class="reading-description">{{ sky_desc }}</p>
+    <p class="reading-humidity">Humidity {{ humid }}%</p>
+    <p class="reading-wind">Wind {{ wind_spd }} {{ wind_dir }}</p>
+</div></script>
+
+<script type="text/x-handlebars" data-template-name="_forecast_input">
+  <div class="input-wrap">
+    {{ input class="user-input" type="text" action="routeTo" valueBinding="newForecastValue"}}
+    <button class="user-input-button" {{ action "routeTo" }}>submit</button>
+  </div>
+</script>
+
+<script type="text/javascript" src="static/app.js"></script>
+</body>
+</html>
